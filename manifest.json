@@ -1,0 +1,49 @@
+{
+	"manifest_version": 2,
+	"name": "W3C Validator",
+	"version": "1.0",
+
+	"description": "Validate documents. NOT the official W3C Validator, but using the official API",
+	"icons": {
+		"16": "icons/icon16.png",
+		"32": "icons/icon32.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	},
+
+	"page_action": {
+		"default_icon": {
+			"19": "icons/icon19.png",
+			"38": "icons/icon38.png"
+		},
+		"default_title": "Validate document (Alt+Shift+V)"
+	},
+
+	"author": "Martin Herndl",
+	"background": {
+		"scripts": [ "w3c_validator_background.js" ],
+		"persistent": false
+	},
+	"commands": {
+		"_execute_page_action": {
+			"suggested_key": {
+				"default": "Alt+Shift+V"
+			},
+			"description": "Validate document"
+		}
+	},
+	"content_scripts": [{
+		"matches": [
+			"http://*/*",
+			"https://*/*"
+		],
+		"js": [ "w3c_validator_content.js" ]
+	}],
+	"homepage_url": "https://github.com/monojp/w3c_validator",
+	"offline_enabled": false,
+	"permissions": [
+		"activeTab",
+		"tabs",
+		"http://validator.herndl.org/"
+	]
+}
