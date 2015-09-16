@@ -18,9 +18,6 @@ var parser = "none";
 var asciiquotes = "yes";
 var callback = "";
 
-// show pageAction only if this regex validates for the document url
-var regex_tab_url = /http(s){0,1}:\/\/.*/g;
-
 // animation helpers
 var page_action_animate_id = null;
 var page_action_animate_count = 0;
@@ -77,14 +74,8 @@ function validate(data, tabId) {
 }
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-	if (changeInfo.status == "complete" && regex_tab_url.exec(tab.url)) {
+	if (changeInfo.status == "complete") {
 		chrome.pageAction.show(tabId);
-	}
-});
-
-chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-	if (typeof tabs[0] != "undefined" && regex_tab_url.exec(tabs[0].url)) {
-		chrome.pageAction.show(tabs[0].id);
 	}
 });
 

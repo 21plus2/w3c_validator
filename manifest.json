@@ -43,7 +43,6 @@
 	"offline_enabled": false,
 	"permissions": [
 		"activeTab",
-		"tabs",
 		"http://validator.herndl.org/"
 	]
 }
