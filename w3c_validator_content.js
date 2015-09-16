@@ -65,15 +65,19 @@ function validator_message_format(message) {
 }
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+	if (!msg.action) {
+		return;
+	}
+
 	// validate action that sends the local html (prefixed with the doctype) to the
 	// background process
-	if (msg.action && msg.action == "validate") {
+	if (msg.action == "validate") {
 		sendResponse(new XMLSerializer().serializeToString(document.doctype)
 				+ document.documentElement.outerHTML);
 	// validate_response action that handles the response from the background process
 	// after a successfull validation. validate_message_* helpers are used to format
 	// and categorize the messages
-	} else if (msg.action && msg.action == "validate_response" && msg.response) {
+	} else if (msg.action == "validate_response" && msg.response) {
 		var cnt_error = 0, cnt_warning = 0;
 		var response = JSON.parse(msg.response);
 
@@ -100,5 +104,8 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 			console.log("The document validates according to the specified schema(s) and to "
 					+ "additional constraints checked by the validator.");
 		}
+	// error reporting action, used to make background error visible in content scripts
+	} else if (msg.action == "error" && msg.response) {
+		console.error(msg.response);
 	}
 });

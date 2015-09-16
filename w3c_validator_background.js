@@ -64,7 +64,9 @@ function validate(data, tabId) {
 						response: xhr.responseText});
 			} else {
 				page_action_animate_stop(tabId);
-				throw "Error: Unexpected response " + xhr.statusText;
+				chrome.tabs.sendMessage(tabId, { action: "error",
+						response: "Validator Error: Unexpected response " + xhr.statusText});
+				throw "Validator Error: Unexpected response " + xhr.statusText;
 			}
 		}
 	}
