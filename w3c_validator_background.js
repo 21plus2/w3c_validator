@@ -64,7 +64,7 @@ function validate(data, tabId) {
 						response: xhr.responseText});
 			} else {
 				page_action_animate_stop(tabId);
-				console.error("Error: %s (%i)", "Unexpected response", xhr.status);
+				throw "Error: Unexpected response " + xhr.statusText;
 			}
 		}
 	}
