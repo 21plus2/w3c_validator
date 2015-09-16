@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "W3C Validator",
-	"version": "1.0",
+	"version": "1.1",
 
 	"description": "Validate documents. NOT the official W3C Validator, but using the official API",
 	"icons": {
