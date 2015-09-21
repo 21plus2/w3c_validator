@@ -18,6 +18,8 @@ var parser = "none";
 var asciiquotes = "yes";
 var callback = "";
 
+var validation_running = false;
+
 // animation helpers
 var page_action_animate_id = null;
 var page_action_animate_count = 0;
@@ -43,6 +45,13 @@ function page_action_animate_stop(tabId) {
 
 // validation helper that queries the proxy via AJAX and sends the response to the content script
 function validate(data, tabId) {
+
+	if (validation_running) {
+		chrome.tabs.sendMessage(tabId, { action: "error",
+				response: "Validator Error: validation is already running"});
+		return;
+	}
+
 	var xhr = new XMLHttpRequest();
 
 	xhr.open("POST", proxy_url + "?url=" + encodeURIComponent(url) + "&content_type="
@@ -52,14 +61,17 @@ function validate(data, tabId) {
 			+ encodeURIComponent(schema) + "&laxtype=" + encodeURIComponent(laxtype) + "&parser="
 			+ encodeURIComponent(parser) + "&asciiquotes=" + encodeURIComponent(asciiquotes)
 			+ "&callback=" + encodeURIComponent(callback));
+	validation_running = true;
 
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			if (xhr.status == 200) {
+				validation_running = false;
 				page_action_animate_stop(tabId);
 				chrome.tabs.sendMessage(tabId, { action: "validate_response",
 						response: xhr.responseText});
 			} else {
+				validation_running = false;
 				page_action_animate_stop(tabId);
 				chrome.tabs.sendMessage(tabId, { action: "error",
 						response: "Validator Error: Unexpected response " + xhr.statusText});
