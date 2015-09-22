@@ -48,7 +48,7 @@ function validate(data, tabId) {
 
 	if (validation_running) {
 		chrome.tabs.sendMessage(tabId, { action: "error",
-				response: "Validator Error: validation is already running"});
+				response: "Validator Error: another validation is still running"});
 		return;
 	}
 
