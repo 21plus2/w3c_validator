@@ -72,8 +72,12 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 	// validate action that sends the local html (prefixed with the doctype) to the
 	// background process
 	if (msg.action == "validate") {
-		sendResponse(new XMLSerializer().serializeToString(document.doctype)
+		if (document.doctype) {
+			sendResponse(new XMLSerializer().serializeToString(document.doctype)
 				+ document.documentElement.outerHTML);
+		} else {
+			sendResponse(document.documentElement.outerHTML);
+		}
 	// validate_response action that handles the response from the background process
 	// after a successfull validation. validate_message_* helpers are used to format
 	// and categorize the messages
