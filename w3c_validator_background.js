@@ -29,7 +29,7 @@ function page_action_animate_start(tabId) {
 		chrome.pageAction.setIcon({path: "icons/loader/frame_" + page_action_animate_count
 				+ ".png", tabId: tabId});
 		page_action_animate_count++;
-		if (page_action_animate_count > 8) {
+		if (page_action_animate_count >= 8) {
 			page_action_animate_count = 0;
 		}
 	}, page_action_animation_interval);
