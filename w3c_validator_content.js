@@ -70,7 +70,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 	}
 
 	// validate action that sends the local html (prefixed with the doctype) to the
-	// background process
+	// background process, doctype is omited if not existing
 	if (msg.action == "validate") {
 		if (document.doctype) {
 			sendResponse(new XMLSerializer().serializeToString(document.doctype)
@@ -100,14 +100,20 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 			}
 		}
 
-		// errors or warnings occured
+		// build status string and log to console
+		var status_string = '';
 		if (cnt_error > 0 || cnt_warning > 0) {
-			console.error(cnt_error + " validation errors, " + cnt_warning + " warnings");
+			status_string = cnt_error + " validation errors, " + cnt_warning + " warnings";
 		// document validated without errors or warnings
 		} else {
-			console.log("The document validates according to the specified schema(s) and to "
-					+ "additional constraints checked by the validator.");
+			status_string = "The document validates according to the specified schema(s) and to "
+					+ "additional constraints checked by the validator.";
 		}
+		console.log(status_string);
+
+		// update final status icon in the backend
+		sendResponse({cnt_error: cnt_error, cnt_warning: cnt_warning,
+				status_string: status_string});
 	// error reporting action, used to make background error visible in content scripts
 	} else if (msg.action == "error" && msg.response) {
 		console.error(msg.response);

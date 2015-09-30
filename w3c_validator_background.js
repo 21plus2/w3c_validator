@@ -43,6 +43,20 @@ function page_action_animate_stop(tabId) {
 	}, tabId: tabId});
 }
 
+function page_action_set_status(tabId, cnt_error, cnt_warning, status_string) {
+	chrome.pageAction.setTitle({title: status_string, tabId: tabId});
+	// error
+	if (cnt_error > 0) {
+		chrome.pageAction.setIcon({path: "icons/status/icon_status_error.png", tabId: tabId});
+	// warning
+	} else if (cnt_warning > 0) {
+		chrome.pageAction.setIcon({path: "icons/status/icon_status_warning.png", tabId: tabId});
+	// ok
+	} else {
+		chrome.pageAction.setIcon({path: "icons/status/icon_status_ok.png", tabId: tabId});
+	}
+}
+
 // validation helper that queries the proxy via AJAX and sends the response to the content script
 function validate(data, tabId) {
 
@@ -68,12 +82,17 @@ function validate(data, tabId) {
 			if (xhr.status == 200) {
 				validation_running = false;
 				page_action_animate_stop(tabId);
-				chrome.tabs.sendMessage(tabId, { action: "validate_response",
-						response: xhr.responseText});
+				// send response to the content script and react to answer by setting the final
+				// status for the page action according to the number of errors and warnings
+				chrome.tabs.sendMessage(tabId, {action: "validate_response",
+						response: xhr.responseText}, function(msg) {
+					page_action_set_status(tabId, msg.cnt_error, msg.cnt_warning,
+							msg.status_string);
+				});
 			} else {
 				validation_running = false;
 				page_action_animate_stop(tabId);
-				chrome.tabs.sendMessage(tabId, { action: "error",
+				chrome.tabs.sendMessage(tabId, {action: "error",
 						response: "Validator Error: Unexpected response " + xhr.statusText});
 				throw "Validator Error: Unexpected response " + xhr.statusText;
 			}
