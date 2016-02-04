@@ -2,7 +2,7 @@
 // https://github.com/monojp/w3c_proxy
 var content_type = "Content-Type: text/html";
 // user configurable params (TODO: create user config page)
-var proxy_url = "http://validator.herndl.org/";
+var proxy_url = "https://validator.herndl.org/";
 var url = "https://validator.w3.org/nu/";
 
 // validator parameters
